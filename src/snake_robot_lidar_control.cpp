@@ -40,7 +40,9 @@ void SnakeRobotLidarControl::initialize(const int control_cycle_msec, robotis_fr
   control_cycle_msec_ = control_cycle_msec;
   control_cycle_sec_ = control_cycle_msec_ * 0.001;
 
-  value_to_rad_ratio_ = M_PI/4095.0;//robot->dxls_["lidar_joint"]->convertValue2Radian(1);
+  int value_of_0_radian = robot->dxls_["lidar_joint"]->value_of_0_radian_position_;
+
+  value_to_rad_ratio_ = robot->dxls_["lidar_joint"]->convertValue2Radian(value_of_0_radian + 1);
   goal_angle_rad_ = current_direction_ * (rotating_angle_rad_ + value_to_rad_ratio_ * 10.0);
 }
 
@@ -51,7 +53,7 @@ void SnakeRobotLidarControl::queueThread()
 
   ros_node.setCallbackQueue(&callback_queue);
 
-  dir_changing_pub_ = ros_node.advertise<std_msgs::Bool>("/heroehs/snake_robot/lidar_control/direction_changing", 5);
+  dir_changing_pub_ = ros_node.advertise<std_msgs::Bool>("/heroehs/snake_robot/lidar_control/direction_change", 5);
 
   while(ros_node.ok())
   {
